@@ -1,25 +1,83 @@
 version: "3.7"
+
 services:
   postgres:
     image: postgres:14
+    container_name: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dbtransaction
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - yape_challenge
+ 
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.5.3
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:7.4.0
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: always
+    networks:
+      - yape_challenge
+      
+  # broker N° 1
   kafka:
-    image: confluentinc/cp-enterprise-kafka:5.5.3
-    depends_on: [zookeeper]
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_BROKER_ID: 1
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_JMX_PORT: 9991
+    container_name: kafka
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
     ports:
-      - 9092:9092
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092 # red externa: 9092 ; red interna: 29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1  # 2 // dos brokers o servicews
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1 # 2 // dos brokers o servicews
+    restart: always
+    networks:
+      - yape_challenge
+
+  micro-transaction:
+    container_name: micro-transaction
+    depends_on:
+      - kafka
+      - postgres
+    build:
+      context: ./micro-transaction
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT:prd
+    environment: # para verificar que enviante usar local o prd
+      - ENVIRONMENT=prd
+    ports:
+      - "3000:3000"
+    networks:
+      - yape_challenge
+
+  micro-antifraude:
+    container_name: micro-antifraude
+    depends_on:
+      - kafka
+    build:
+      context: ./micro-antifraude
+      dockerfile: Dockerfile
+      args:
+        - ENVIRONMENT:prd
+    environment: # para verificar que enviante usar local o prd
+      - ENVIRONMENT=prd
+    ports:
+      - "3001:3000"
+    networks:
+      - yape_challenge
+
+networks:
+  yape_challenge:
+    driver: bridge

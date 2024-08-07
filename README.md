@@ -1,82 +1,67 @@
-# Yape Code Challenge :rocket:
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-Our code challenge will let you marvel us with your Jedi coding skills :smile:. 
 
-Don't forget that the proper way to submit your work is to fork the repo and create a PR :wink: ... have fun !!
+# Aplicacion de  Transaciones con arquitectura hexagonal
+- nodejs: v 18.20.4
+## Estructura del Proyecto Basado en Aplication, Domain, Infrastructure
+1) ``Capa Application``
+2) ``Capa de Dominio (núcleo-core)``
+3) ``Capa de Infraestructura``
+- La aplicacipon se subdivide en dos microservicios (micro-intifraude, micro-transaction). Está conformado por nestjs, kafka y postgreSQL
+- Cada microservicio tiene un ```application-local.properties```, donde se define lo valores de las variables. La intención de crear este tipo archivo
+  es; para la centralización de las variables y configurar en futuras actualizaciones con keyvalues de azure, aws
 
-- [Problem](#problem)
-- [Tech Stack](#tech_stack)
-- [Send us your challenge](#send_us_your_challenge)
+  
+![](./resources/arq.png)
 
-# Problem
+## Instalación y Prueba
+### Docker
+- ```Requisitos```:
+- Se usará las configuraciones de application-prd.properties (no actualizar)
+- ```Instalación```:
+- Es necesario tener docker en la máquina personal.
+- Para iniciar los microservicios (micro-transaction, micro-antifraude) ejecutar el siguiente comando y verificar que los componentes estén en ejecución: ```docker-compose up -d```
 
-Every time a financial transaction is created it must be validated by our anti-fraud microservice and then the same service sends a message back to update the transaction status.
-For now, we have only three transaction statuses:
+### Local (Sin interacción con docker)
+- ```Requisitos```: 
+1) Tener instalado postgreSQL. Si desean probar con la db del docker-container cambiar los valores en ```application-local.properties```
+- ```Instalar localmente```: 
+ 1) Ingresar a a cada microservicio (micro-intifraude, micro-transaction) y ejecutar: ``npm install``
+- ```Probar localemente```: 
+ 1) Ingresar a a cada microservicio (micro-intifraude, micro-transaction) y ejecutar ``npm run start:dev``
 
-<ol>
-  <li>pending</li>
-  <li>approved</li>
-  <li>rejected</li>  
-</ol>
-
-Every transaction with a value greater than 1000 should be rejected.
-
-```mermaid
-  flowchart LR
-    Transaction -- Save Transaction with pending Status --> transactionDatabase[(Database)]
-    Transaction --Send transaction Created event--> Anti-Fraud
-    Anti-Fraud -- Send transaction Status Approved event--> Transaction
-    Anti-Fraud -- Send transaction Status Rejected event--> Transaction
-    Transaction -- Update transaction Status event--> transactionDatabase[(Database)]
-```
-
-# Tech Stack
-
-<ol>
-  <li>Node. You can use any framework you want (i.e. Nestjs with an ORM like TypeOrm or Prisma) </li>
-  <li>Any database</li>
-  <li>Kafka</li>    
-</ol>
-
-We do provide a `Dockerfile` to help you get started with a dev environment.
-
-You must have two resources:
-
-1. Resource to create a transaction that must containt:
-
-```json
-{
-  "accountExternalIdDebit": "Guid",
-  "accountExternalIdCredit": "Guid",
+## Prueba
+### Ingresar en un navegador, postman. agregar el request:
+ - crear una transaccion
+ ```bash
+ curl --location 'localhost:3000/transactions' \
+--header 'Content-Type: application/json' \
+--data '{
+  "accountExternalIdDebit": "{{$guid}}",
+  "accountExternalIdCredit": "{{$guid}}",
   "tranferTypeId": 1,
-  "value": 120
-}
+  "value": 20
+}'
+```
+ - listar transacciones
+
+```bash
+curl --location 'localhost:3000/transactions'
 ```
 
-2. Resource to retrieve a transaction
-
-```json
-{
-  "transactionExternalId": "Guid",
-  "transactionType": {
-    "name": ""
-  },
-  "transactionStatus": {
-    "name": ""
-  },
-  "value": 120,
-  "createdAt": "Date"
-}
+ - listar una transaccion por id. Reeemplazar el valor de id a buscar
+```bash
+curl --location 'localhost:3000/transactions/98836e50-c312-4f8b-b6c9-1bba2e5f97a1'
 ```
+## Ejemplo
+### Creación de una transacción
+![](./resources/create_transaction.png)
+### Listar una transacción por id
+![](./resources/find_id_transaction.png)
+### Listar transacciones
+![](./resources/list_transaction.png)
 
-## Optional
-
-You can use any approach to store transaction data but you should consider that we may deal with high volume scenarios where we have a huge amount of writes and reads for the same data at the same time. How would you tackle this requirement?
-
-You can use Graphql;
-
-# Send us your challenge
-
-When you finish your challenge, after forking a repository, you **must** open a pull request to our repository. There are no limitations to the implementation, you can follow the programming paradigm, modularization, and style that you feel is the most appropriate solution.
-
-If you have any questions, please let us know.
+## Autor
+[EVER CARLOS ROJAS](https://github.com/evercarlos)
