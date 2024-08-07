@@ -29,7 +29,7 @@
 1) Tener instalado postgreSQL. Si desean probar con la db del docker-container cambiar los valores en ```application-local.properties```
 - ```Instalar localmente```: 
  1) Ingresar a a cada microservicio (micro-intifraude, micro-transaction) y ejecutar: ``npm install``
-- ```Probar localemente```: 
+- ```Probar localmente```: 
  1) Ingresar a a cada microservicio (micro-intifraude, micro-transaction) y ejecutar ``npm run start:dev``
 
 ## Prueba
