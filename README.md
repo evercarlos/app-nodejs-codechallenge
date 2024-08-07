@@ -33,8 +33,8 @@
  1) Ingresar a a cada microservicio (micro-intifraude, micro-transaction) y ejecutar ``npm run start:dev``
 
 ## Prueba
-### Ingresar en un navegador, postman. agregar el request:
- - crear una transaccion
+### Para probar ejecutar el siguiente curl o llenar manualmente los datos:
+ - Crear una transaccion
  ```bash
  curl --location 'localhost:3000/transactions' \
 --header 'Content-Type: application/json' \
@@ -45,17 +45,19 @@
   "value": 20
 }'
 ```
- - listar transacciones
+ - Listar transacciones
 
 ```bash
 curl --location 'localhost:3000/transactions'
 ```
 
- - listar una transaccion por id. Reeemplazar el valor de id a buscar
+ - Listar una transaccion por id. Reeemplazar el valor de id a buscar
 ```bash
 curl --location 'localhost:3000/transactions/98836e50-c312-4f8b-b6c9-1bba2e5f97a1'
 ```
 ## Ejemplo
+- A continuación se mostrá las pruebas de funcionamiento de la aplicacion.
+
 ### Creación de una transacción
 ![](./resources/create_transaction.png)
 ### Listar una transacción por id
