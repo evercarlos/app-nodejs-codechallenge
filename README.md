@@ -11,7 +11,7 @@
 3) ``Capa de Infraestructura``
 - La aplicacipon se subdivide en dos microservicios (micro-intifraude, micro-transaction). Está conformado por nestjs, kafka y postgreSQL
 - Cada microservicio tiene un ```application-local.properties, application-prd.properties```, donde se define lo valores de las variables. La intención de crear este tipo archivo
-  es; para la centralización de las variables y configurar en futuras actualizaciones con keyvalues de azure, aws
+  es,la centralización de  variables y configurar en futuras actualizaciones con keyvalues de azure, aws
 
   
 ![](./resources/arq.png)
