@@ -1,1 +1,0 @@
-export { TransactionPort } from './transaction.port'
