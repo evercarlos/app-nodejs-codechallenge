@@ -57,12 +57,19 @@ public class TransactionAdapter implements TransactionOutPort {
     @Override
     public void update(TransactionRequest transactionRequest) {
         TransactionEntity transactionEntity = TransactionMapper.MAPPER.toTransaction(transactionRequest);
+        if (transactionEntity == null) {
+            throw new TransactionException(HttpStatus.NOT_FOUND, CommonErrorType.COMMON_ERROR_404_1.getDescription());
+        }
         TransactionMapper.MAPPER.toTransactionResponse(transactionRepository.save(transactionEntity));
     }
 
     @Override
     public TransactionResponse findByExternalId(UUID transactionExternalId) {
         TransactionEntity transactionEntity = transactionRepository.findByTransactionExternalId(transactionExternalId);
+        if (transactionEntity == null) {
+            throw new TransactionException(HttpStatus.NOT_FOUND, CommonErrorType.COMMON_ERROR_404_1.getDescription());
+        }
+
         return TransactionMapper.MAPPER.toTransactionResponse(transactionEntity);
     }
 }
