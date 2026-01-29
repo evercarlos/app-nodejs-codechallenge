@@ -5,9 +5,11 @@ import lombok.Getter;
 @Getter
 public enum CommonErrorType {
 
-    COMMON_ERROR_400_1("Error en el criterio de ordenación"),
+    COMMON_ERROR_400_1("Error in the sorting criteria"),
+    COMMON_ERROR_400_2("Invalid request"),
+    COMMON_ERROR_400_3("Invalid format for field"),
 
-    COMMON_ERROR_404_1("Registro no encontrado");
+    COMMON_ERROR_404_1("Record not found");
 
     private final String description;
 

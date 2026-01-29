@@ -1,4 +1,4 @@
-package com.tec.yape.transaction.infrastructure;
+package com.tec.yape.transaction.infrastructure.helper;
 
 import org.springframework.data.domain.Sort;
 

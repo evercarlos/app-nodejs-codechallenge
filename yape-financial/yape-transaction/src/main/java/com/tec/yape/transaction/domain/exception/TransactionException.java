@@ -11,8 +11,9 @@ public class TransactionException extends RuntimeException {
     public HttpStatus status;
     public String code;
 
-    public TransactionException(HttpStatus httpStatus, String message) {
+    public TransactionException(HttpStatus httpStatus, String code, String message) {
         super(message);
         this.status = httpStatus;
+        this.code = code;
     }
 }

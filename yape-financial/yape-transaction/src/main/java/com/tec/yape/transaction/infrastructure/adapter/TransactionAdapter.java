@@ -6,7 +6,7 @@ import com.tec.yape.transaction.domain.exception.TransactionException;
 import com.tec.yape.transaction.domain.model.TransactionRequest;
 import com.tec.yape.transaction.domain.model.TransactionResponse;
 import com.tec.yape.transaction.domain.port.output.TransactionOutPort;
-import com.tec.yape.transaction.infrastructure.TransactionHelper;
+import com.tec.yape.transaction.infrastructure.helper.TransactionHelper;
 import com.tec.yape.transaction.infrastructure.repository.TransactionRepository;
 import com.tec.yape.transaction.infrastructure.repository.model.entity.TransactionEntity;
 import com.tec.yape.transaction.infrastructure.repository.model.mapper.TransactionMapper;
@@ -33,7 +33,7 @@ public class TransactionAdapter implements TransactionOutPort {
 
         Sort sort = pageable.getSort().isUnsorted() ? Sort.by("id") : pageable.getSort();
         if (!TransactionHelper.validateSorName(sort)) {
-            throw new TransactionException(HttpStatus.BAD_REQUEST, CommonErrorType.COMMON_ERROR_400_1.getDescription());
+            throw new TransactionException(HttpStatus.BAD_REQUEST, CommonErrorType.COMMON_ERROR_400_1.name(), CommonErrorType.COMMON_ERROR_400_1.getDescription());
         }
 
         return transactionRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort))
@@ -47,7 +47,6 @@ public class TransactionAdapter implements TransactionOutPort {
     }
 
 
-
     @Override
     public TransactionResponse create(TransactionRequest transactionRequest) {
         TransactionEntity transactionEntity = TransactionMapper.MAPPER.toTransaction(transactionRequest);
@@ -58,7 +57,7 @@ public class TransactionAdapter implements TransactionOutPort {
     public void update(TransactionRequest transactionRequest) {
         TransactionEntity transactionEntity = TransactionMapper.MAPPER.toTransaction(transactionRequest);
         if (transactionEntity == null) {
-            throw new TransactionException(HttpStatus.NOT_FOUND, CommonErrorType.COMMON_ERROR_404_1.getDescription());
+            throw new TransactionException(HttpStatus.NOT_FOUND, CommonErrorType.COMMON_ERROR_404_1.name(), CommonErrorType.COMMON_ERROR_404_1.getDescription());
         }
         TransactionMapper.MAPPER.toTransactionResponse(transactionRepository.save(transactionEntity));
     }
@@ -67,7 +66,7 @@ public class TransactionAdapter implements TransactionOutPort {
     public TransactionResponse findByExternalId(UUID transactionExternalId) {
         TransactionEntity transactionEntity = transactionRepository.findByTransactionExternalId(transactionExternalId);
         if (transactionEntity == null) {
-            throw new TransactionException(HttpStatus.NOT_FOUND, CommonErrorType.COMMON_ERROR_404_1.getDescription());
+            throw new TransactionException(HttpStatus.NOT_FOUND,  CommonErrorType.COMMON_ERROR_404_1.name(), CommonErrorType.COMMON_ERROR_404_1.getDescription());
         }
 
         return TransactionMapper.MAPPER.toTransactionResponse(transactionEntity);

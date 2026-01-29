@@ -4,6 +4,7 @@ import com.tec.yape.transaction.application.usecase.TransactionUseCase;
 import com.tec.yape.transaction.infrastructure.rest.dto.request.TransactionRequestDto;
 import com.tec.yape.transaction.infrastructure.rest.dto.response.TransactionResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -23,9 +24,12 @@ public class TransactionController {
     private final TransactionUseCase transactionUseCase;
 
 
-    @Operation(summary = "register a new transaction")
+    @Operation(
+            summary = "Register a new transaction",
+            description = "Creates a transaction and sends it to antifraud validation"
+    )
     @PostMapping
-    public TransactionResponseDto registerTransaction(@RequestBody TransactionRequestDto transactionRequestDto) {
+    public TransactionResponseDto registerTransaction( @Valid @RequestBody TransactionRequestDto transactionRequestDto) {
         return transactionUseCase.registerTransaction(transactionRequestDto);
     }
 
