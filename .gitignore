@@ -1,0 +1,39 @@
+# ===== Java =====
+*.class
+*.log
+*.ctxt
+
+# ===== Maven =====
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# ===== Spring Boot =====
+*.jar
+*.war
+*.ear
+*.iml
+
+# ===== IDEs =====
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+logs/
+*.log
+
+# ===== Environment =====
+.env
+.env.local
+
+# ===== Docker =====
+**/docker-data/
+
+# ===== Kafka (local) =====
+kafka-data/
+zookeeper-data/
